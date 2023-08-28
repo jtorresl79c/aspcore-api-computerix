@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Data_Access_Layer.Repository.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using WebApplicationAPI.Repository.Models;
 
-namespace WebApplicationAPI.Repository
+namespace Data_Access_Layer.Repository
 {
     public partial class PersonDbContext : DbContext
     {

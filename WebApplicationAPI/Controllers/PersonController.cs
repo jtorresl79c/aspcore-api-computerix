@@ -1,6 +1,6 @@
+using Business_Logic_Layer.Models;
+using Data_Access_Layer.Repository.Entities;
 using Microsoft.AspNetCore.Mvc;
-using WebApplicationAPI.Repository;
-using WebApplicationAPI.Repository.Models;
 
 namespace WebApplicationAPI.Controllers
 {
@@ -8,67 +8,85 @@ namespace WebApplicationAPI.Controllers
     [Route("[controller]")]
     public class PersonController : ControllerBase
     {
-        [HttpDelete]
-        [Route("deletePerson")]
-        public void deletePerson(int id)
+        private Business_Logic_Layer.PersonBLL _BLL;
+        public PersonController()
         {
-            var db = new PersonDbContext();
-
-            Person? p = new Person();
-
-            p = db.Person.FirstOrDefault(p => p.Id == id);
-
-            if (p == null)
-            {
-                throw new Exception("Not found");
-            }
-
-            db.Person.Remove(p);
-            db.SaveChanges();
-
+            _BLL = new Business_Logic_Layer.PersonBLL();
         }
-
 
         [HttpGet]
         [Route("getPersons")]
-        public List<Person> GetAllPersons()
+        public List<PersonModel> GetAllPersons()
         {
-            var db = new PersonDbContext();
-            return db.Person.ToList();
+            return _BLL.GetAllPersons();
         }
 
+        [HttpGet]
+        [Route("getPersonById")]
+        //public Person GetPersonById(int id)
+        public ActionResult<PersonModel> GetPersonById(int id) // el <Person> indica que a Ok solo podremos pasarle datos de tipo Person
+        {
+            var person = _BLL.GetPersonById(id);
+            if (person == null)
+            {
+                return NotFound("Invalid ID");
+            }
+
+            return Ok(person);
+        }
 
         [HttpPost]
         [Route("postPerson")]
-        public void postPerson([FromBody] Person p)
+        public void postPerson([FromBody] PersonModel personModel)
         {
-            var db = new PersonDbContext();
-
-            db.Add(p);
-            db.SaveChanges();
+            _BLL.postPerson(personModel);
         }
 
-        
 
-        [HttpGet]
-        [Route("getPerson")]
-        public Person GetPerson(int id)
-        {
-            var db = new PersonDbContext();
 
-            Person? p = new Person();
+        //[HttpDelete]
+        //[Route("deletePerson")]
+        //public void deletePerson(int id)
+        //{
+        //    var db = new PersonDbContext();
 
-            p = db.Person.FirstOrDefault(p => p.Id == id);
+        //    Person? p = new Person();
 
-            if (p == null)
-            {
-                throw new Exception("Not found");
-            }
+        //    p = db.Person.FirstOrDefault(p => p.Id == id);
 
-            return p;
-        }
+        //    if (p == null)
+        //    {
+        //        throw new Exception("Not found");
+        //    }
 
-        
+        //    db.Person.Remove(p);
+        //    db.SaveChanges();
+
+        //}
+
+
+
+
+
+        //[HttpGet]
+        //[Route("getPerson")]
+        //public Person GetPerson(int id)
+        //{
+        //    var db = new PersonDbContext();
+
+        //    Person? p = new Person();
+
+        //    p = db.Person.FirstOrDefault(p => p.Id == id);
+
+        //    if (p == null)
+        //    {
+        //        throw new Exception("Not found");
+        //    }
+
+        //    return p;
+        //}
+
+
 
 
     }
